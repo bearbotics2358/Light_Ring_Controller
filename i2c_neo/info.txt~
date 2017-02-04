@@ -1,0 +1,307 @@
+20150130
+
+Having problems with part from last year
+Dump it to readback.hex
+Reflash using buspirate
+looks like fuses are wrong:
+
+bobd@HP-Mini:~/AVR uC/projects/ATTiny I2C/i2c_rgb$ avrdude -c buspirate -P /dev/ttyUSB0 -pt85 
+
+Attempting to initiate BusPirate binary mode...
+avrdude: AVR device initialized and ready to accept instructions
+
+Reading | ################################################## | 100% 0.01s
+
+avrdude: Device signature = 0x1e930b
+
+avrdude: safemode: Fuses OK (H:FF, E:DE, L:E2)
+
+avrdude done.  Thank you.
+
+bobd@HP-Mini:~/AVR uC/projects/ATTiny I2C/i2c_rgb$
+
+Looks like high and efuse are swapped?
+
+Should be
+lfuse: e2
+hfuse: df
+efuse: ff
+Which matches xmas_bells
+
+read 1 by 1
+bobd@HP-Mini:~$ avrdude -c buspirate -P /dev/ttyUSB0 -pt85 -U lfuse:r:-:h
+
+Attempting to initiate BusPirate binary mode...
+avrdude: AVR device initialized and ready to accept instructions
+
+Reading | ################################################## | 100% 0.01s
+
+avrdude: Device signature = 0x1e930b
+avrdude: reading lfuse memory:
+
+Reading | ################################################## | 100% 0.00s
+
+avrdude: writing output file "<stdout>"
+0xe2
+
+avrdude: safemode: Fuses OK (H:FF, E:DE, L:E2)
+
+avrdude done.  Thank you.
+
+bobd@HP-Mini:~$ avrdude -c buspirate -P /dev/ttyUSB0 -pt85 -U hfuse:r:-:h
+
+Attempting to initiate BusPirate binary mode...
+avrdude: AVR device initialized and ready to accept instructions
+
+Reading | ################################################## | 100% 0.01s
+
+avrdude: Device signature = 0x1e930b
+avrdude: reading hfuse memory:
+
+Reading | ################################################## | 100% 0.00s
+
+avrdude: writing output file "<stdout>"
+0xde
+
+avrdude: safemode: Fuses OK (H:FF, E:DE, L:E2)
+
+avrdude done.  Thank you.
+
+bobd@HP-Mini:~$ avrdude -c buspirate -P /dev/ttyUSB0 -pt85 -U efuse:r:-:h
+
+Attempting to initiate BusPirate binary mode...
+avrdude: AVR device initialized and ready to accept instructions
+
+Reading | ################################################## | 100% 0.01s
+
+avrdude: Device signature = 0x1e930b
+avrdude: reading efuse memory:
+
+Reading | ################################################## | 100% 0.00s
+
+avrdude: writing output file "<stdout>"
+0xff
+
+avrdude: safemode: Fuses OK (H:FF, E:DE, L:E2)
+
+avrdude done.  Thank you.
+
+bobd@HP-Mini:~$
+
+Ok, the hfuse difference between 0xdf (no BOD - Brown Out Detection)
+and 0xde (BOD @ 1.8v)
+
+Should be
+lfuse: e2
+hfuse: de
+efuse: ff
+
+Unprogrammed part
+lfuse: 62
+hfuse: df
+efuse: ff
+
+Blow hfuse and lfuse
+bobd@HP-Mini:~$ avrdude -c buspirate -P /dev/ttyUSB0 -p t85 -U lfuse:w:0xe2:m -U hfuse:w:0xde:m
+bobd@HP-Mini:~$ avrdude -c buspirate -P /dev/ttyUSB0 -p t85 -U lfuse:r:-:h -U hfuse:r:-:h -U efuse:r:-:h
+
+Attempting to initiate BusPirate binary mode...
+avrdude: AVR device initialized and ready to accept instructions
+Reading | ################################################## | 100% 0.01s
+avrdude: Device signature = 0x1e930b
+avrdude: reading lfuse memory:
+Reading | ################################################## | 100% 0.01s
+avrdude: writing output file "<stdout>"
+0xe2
+avrdude: reading hfuse memory:
+Reading | ################################################## | 100% 0.00s
+avrdude: writing output file "<stdout>"
+0xde
+avrdude: reading efuse memory:
+Reading | ################################################## | 100% 0.00s
+avrdude: writing output file "<stdout>"
+0xff
+avrdude: safemode: Fuses OK (H:FF, E:DE, L:E2)
+avrdude done.  Thank you.
+bobd@HP-Mini:~$
+
+Ok, program
+bobd@HP-Mini:~/AVR uC/projects/ATTiny I2C/i2c_rgb$ avrdude -c buspirate -P /dev/ttyUSB0 -p t85 -U flash:w:i2c_rgb.hex 
+
+Attempting to initiate BusPirate binary mode...
+avrdude: AVR device initialized and ready to accept instructions
+
+Reading | ################################################## | 100% 0.02s
+
+avrdude: Device signature = 0x1e930b
+avrdude: NOTE: "flash" memory has been specified, an erase cycle will be performed
+         To disable this feature, specify the -D option.
+avrdude: erasing chip
+avrdude: reading input file "i2c_rgb.hex"
+avrdude: input file i2c_rgb.hex auto detected as Intel Hex
+avrdude: writing flash (780 bytes):
+
+Writing | ################################################## | 100% 1.38s
+
+avrdude: 780 bytes of flash written
+avrdude: verifying flash memory against i2c_rgb.hex:
+avrdude: load data flash data from input file i2c_rgb.hex:
+avrdude: input file i2c_rgb.hex auto detected as Intel Hex
+avrdude: input file i2c_rgb.hex contains 780 bytes
+avrdude: reading on-chip flash data:
+
+Reading | ################################################## | 100% 2.98s
+
+avrdude: verifying ...
+avrdude: 780 bytes of flash verified
+
+avrdude: safemode: Fuses OK (H:FF, E:DE, L:E2)
+
+avrdude done.  Thank you.
+
+bobd@HP-Mini:~/AVR uC/projects/ATTiny I2C/i2c_rgb$
+
+Still running code (led lights up dim green, can see it strobing), but
+I2C doesn't appear to work
+Using bus pirate I2C scanner (macro "(1)"), nothing found
+Yesterday tested Alexander's IMU, it found it
+
+Switched to talking to it with Roboduino
+i2c_scanner found it at address 4
+Can talk to it just fine i2c_send_rgb
+
+
+20140330
+
+Using buspirate as AVR programmer
+
+check fuses
+
+bobd@HP-Mini:~/AVR uC/projects/ATTiny I2C/i2c_rgb$ avrdude -c buspirate -P /dev/ttyUSB0 -p t85 -U lfuse:r:-:h -U hfuse:r:-:h -U efuse:r:-:h
+
+Detecting BusPirate...
+**  
+**  Bus Pirate v3a
+**  Firmware v5.10 (r559)  Bootloader v4.4
+**  DEVID:0x0447 REVID:0x3046 (24FJ64GA002 B8)
+**  http://dangerousprototypes.com
+**
+BusPirate: using BINARY mode
+avrdude: AVR device initialized and ready to accept instructions
+
+Reading | ################################################## | 100% 0.01s
+
+avrdude: Device signature = 0x1e930b
+avrdude: reading lfuse memory:
+
+Reading | ################################################## | 100% 0.00s
+
+avrdude: writing output file "<stdout>"
+0xe2
+avrdude: reading hfuse memory:
+
+Reading | ################################################## | 100% 0.00s
+
+avrdude: writing output file "<stdout>"
+0xdf
+avrdude: reading efuse memory:
+
+Reading | ################################################## | 100% 0.00s
+
+avrdude: writing output file "<stdout>"
+0xff
+
+avrdude: safemode: Fuses OK
+
+avrdude done.  Thank you.
+
+bobd@HP-Mini:~/AVR uC/projects/ATTiny I2C/i2c_rgb$
+
+No BOD
+
+Change to 1.8v
+
+e2 de ff
+
+bobd@HP-Mini:~/AVR uC/projects/ATTiny I2C/i2c_rgb$ avrdude -c buspirate -P /dev/ttyUSB0 -p t85 -U lfuse:w:0xe2:m -U hfuse:w:0xde:m -U efuse:w:0xff:m
+
+Detecting BusPirate...
+**  
+**  Bus Pirate v3a
+**  Firmware v5.10 (r559)  Bootloader v4.4
+**  DEVID:0x0447 REVID:0x3046 (24FJ64GA002 B8)
+**  http://dangerousprototypes.com
+**
+BusPirate: using BINARY mode
+avrdude: AVR device initialized and ready to accept instructions
+
+Reading | ################################################## | 100% 0.01s
+
+avrdude: Device signature = 0x1e930b
+avrdude: reading input file "0xe2"
+avrdude: writing lfuse (1 bytes):
+
+Writing | ################################################## | 100% 0.00s
+
+avrdude: 1 bytes of lfuse written
+avrdude: verifying lfuse memory against 0xe2:
+avrdude: load data lfuse data from input file 0xe2:
+avrdude: input file 0xe2 contains 1 bytes
+avrdude: reading on-chip lfuse data:
+
+Reading | ################################################## | 100% 0.00s
+
+avrdude: verifying ...
+avrdude: 1 bytes of lfuse verified
+avrdude: reading input file "0xde"
+avrdude: writing hfuse (1 bytes):
+
+Writing | ################################################## | 100% 0.01s
+
+avrdude: 1 bytes of hfuse written
+avrdude: verifying hfuse memory against 0xde:
+avrdude: load data hfuse data from input file 0xde:
+avrdude: input file 0xde contains 1 bytes
+avrdude: reading on-chip hfuse data:
+
+Reading | ################################################## | 100% 0.00s
+
+avrdude: verifying ...
+avrdude: 1 bytes of hfuse verified
+avrdude: reading input file "0xff"
+avrdude: writing efuse (1 bytes):
+
+Writing | ################################################## | 100% 0.01s
+
+avrdude: 1 bytes of efuse written
+avrdude: verifying efuse memory against 0xff:
+avrdude: load data efuse data from input file 0xff:
+avrdude: input file 0xff contains 1 bytes
+avrdude: reading on-chip efuse data:
+
+Reading | ################################################## | 100% 0.00s
+
+avrdude: verifying ...
+avrdude: 1 bytes of efuse verified
+
+avrdude: safemode: Fuses OK
+
+avrdude done.  Thank you.
+
+bobd@HP-Mini:~/AVR uC/projects/ATTiny I2C/i2c_rgb$
+
+
+
+
+Make a backup part for competition
+
+blow fuses 
+
+bobd@HP-Mini:~/AVR uC/projects/ATTiny I2C/i2c_rgb$ avrdude -c buspirate -P /dev/ttyUSB0 -p t85 -U lfuse:w:0xe2:m -U hfuse:w:0xde:m -U efuse:w:0xff:m
+
+check
+
+blow program
+
+Verified
+
