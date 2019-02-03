@@ -3,20 +3,28 @@ i2c_neo.elf:     file format elf32-avr
 
 Sections:
 Idx Name          Size      VMA       LMA       File off  Algn
-  0 .text         0000051a  00000000  00000000  00000094  2**1
+  0 .text         0000054c  00000000  00000000  00000094  2**1
                   CONTENTS, ALLOC, LOAD, READONLY, CODE
-  1 .data         00000004  00800060  0000051a  000005ae  2**0
+  1 .data         00000008  00800060  0000054c  000005e0  2**0
                   CONTENTS, ALLOC, LOAD, DATA
-  2 .bss          0000005e  00800064  00800064  000005b2  2**0
+  2 .bss          000000bb  00800068  00800068  000005e8  2**0
                   ALLOC
-  3 .stab         000017ac  00000000  00000000  000005b4  2**2
+  3 .stab         000019ec  00000000  00000000  000005e8  2**2
                   CONTENTS, READONLY, DEBUGGING
-  4 .stabstr      000010c1  00000000  00000000  00001d60  2**0
+  4 .stabstr      00001bae  00000000  00000000  00001fd4  2**0
                   CONTENTS, READONLY, DEBUGGING
-  5 .comment      00000011  00000000  00000000  00002e21  2**0
+  5 .comment      00000022  00000000  00000000  00003b82  2**0
                   CONTENTS, READONLY
-  6 .note.gnu.avr.deviceinfo 0000003c  00000000  00000000  00002e34  2**2
+  6 .note.gnu.avr.deviceinfo 0000003c  00000000  00000000  00003ba4  2**2
                   CONTENTS, READONLY
+  7 .debug_info   00000420  00000000  00000000  00003be0  2**0
+                  CONTENTS, READONLY, DEBUGGING
+  8 .debug_abbrev 000003e8  00000000  00000000  00004000  2**0
+                  CONTENTS, READONLY, DEBUGGING
+  9 .debug_line   0000001a  00000000  00000000  000043e8  2**0
+                  CONTENTS, READONLY, DEBUGGING
+ 10 .debug_str    00000169  00000000  00000000  00004402  2**0
+                  CONTENTS, READONLY, DEBUGGING
 
 Disassembly of section .text:
 
@@ -49,18 +57,18 @@ Disassembly of section .text:
   2a:	10 e0       	ldi	r17, 0x00	; 0
   2c:	a0 e6       	ldi	r26, 0x60	; 96
   2e:	b0 e0       	ldi	r27, 0x00	; 0
-  30:	ea e1       	ldi	r30, 0x1A	; 26
+  30:	ec e4       	ldi	r30, 0x4C	; 76
   32:	f5 e0       	ldi	r31, 0x05	; 5
   34:	02 c0       	rjmp	.+4      	; 0x3a <__do_copy_data+0x10>
   36:	05 90       	lpm	r0, Z+
   38:	0d 92       	st	X+, r0
-  3a:	a4 36       	cpi	r26, 0x64	; 100
+  3a:	a8 36       	cpi	r26, 0x68	; 104
   3c:	b1 07       	cpc	r27, r17
   3e:	d9 f7       	brne	.-10     	; 0x36 <__do_copy_data+0xc>
 
 00000040 <__do_clear_bss>:
-  40:	20 e0       	ldi	r18, 0x00	; 0
-  42:	a4 e6       	ldi	r26, 0x64	; 100
+  40:	21 e0       	ldi	r18, 0x01	; 1
+  42:	a8 e6       	ldi	r26, 0x68	; 104
   44:	b0 e0       	ldi	r27, 0x00	; 0
   46:	01 c0       	rjmp	.+2      	; 0x4a <.do_clear_bss_start>
 
@@ -68,11 +76,11 @@ Disassembly of section .text:
   48:	1d 92       	st	X+, r1
 
 0000004a <.do_clear_bss_start>:
-  4a:	a2 3c       	cpi	r26, 0xC2	; 194
+  4a:	a3 32       	cpi	r26, 0x23	; 35
   4c:	b2 07       	cpc	r27, r18
   4e:	e1 f7       	brne	.-8      	; 0x48 <.do_clear_bss_loop>
   50:	af d1       	rcall	.+862    	; 0x3b0 <main>
-  52:	61 c2       	rjmp	.+1218   	; 0x516 <_exit>
+  52:	7a c2       	rjmp	.+1268   	; 0x548 <_exit>
 
 00000054 <__bad_interrupt>:
   54:	d5 cf       	rjmp	.-86     	; 0x0 <__vectors>
@@ -84,26 +92,26 @@ usiTwiSlaveInit(
 )
 {
 	slaveAddress = address;
-  56:	80 93 c1 00 	sts	0x00C1, r24
+  56:	80 93 22 01 	sts	0x0122, r24	; 0x800122 <slaveAddress>
 
 	twi_stopped = 1;
   5a:	81 e0       	ldi	r24, 0x01	; 1
   5c:	90 e0       	ldi	r25, 0x00	; 0
-  5e:	90 93 bd 00 	sts	0x00BD, r25
-  62:	80 93 bc 00 	sts	0x00BC, r24
+  5e:	90 93 21 01 	sts	0x0121, r25	; 0x800121 <twi_stopped+0x1>
+  62:	80 93 20 01 	sts	0x0120, r24	; 0x800120 <twi_stopped>
 void
 flushTwiBuffers(
   void
 )
 {
   rxTail = 0;
-  66:	10 92 77 00 	sts	0x0077, r1
+  66:	10 92 7b 00 	sts	0x007B, r1	; 0x80007b <rxTail>
   rxHead = 0;
-  6a:	10 92 78 00 	sts	0x0078, r1
+  6a:	10 92 7c 00 	sts	0x007C, r1	; 0x80007c <rxHead>
   txTail = 0;
-  6e:	10 92 65 00 	sts	0x0065, r1
+  6e:	10 92 69 00 	sts	0x0069, r1	; 0x800069 <txTail>
   txHead = 0;
-  72:	10 92 66 00 	sts	0x0066, r1
+  72:	10 92 6a 00 	sts	0x006A, r1	; 0x80006a <txHead>
   // low when a start condition is detected or a counter overflow (only
   // for USIWM1, USIWM0 = 11).  This inserts a wait state.  SCL is released
   // by the ISRs (USI_START_vect and USI_OVERFLOW_vect).
@@ -146,13 +154,13 @@ flushTwiBuffers(
 
   // calculate buffer index
   tmphead = ( txHead + 1 ) & TWI_TX_BUFFER_MASK;
-  8c:	20 91 66 00 	lds	r18, 0x0066
+  8c:	20 91 6a 00 	lds	r18, 0x006A	; 0x80006a <txHead>
   90:	2f 5f       	subi	r18, 0xFF	; 255
   92:	2f 70       	andi	r18, 0x0F	; 15
 
   // wait for free space in buffer
   while ( tmphead == txTail );
-  94:	90 91 65 00 	lds	r25, 0x0065
+  94:	90 91 69 00 	lds	r25, 0x0069	; 0x800069 <txTail>
   98:	29 17       	cp	r18, r25
   9a:	e1 f3       	breq	.-8      	; 0x94 <usiTwiTransmitByte+0x8>
 
@@ -160,13 +168,13 @@ flushTwiBuffers(
   txBuf[ tmphead ] = data;
   9c:	e2 2f       	mov	r30, r18
   9e:	f0 e0       	ldi	r31, 0x00	; 0
-  a0:	e9 59       	subi	r30, 0x99	; 153
+  a0:	e5 59       	subi	r30, 0x95	; 149
   a2:	ff 4f       	sbci	r31, 0xFF	; 255
   a4:	80 83       	st	Z, r24
 
   // store new index
   txHead = tmphead;
-  a6:	20 93 66 00 	sts	0x0066, r18
+  a6:	20 93 6a 00 	sts	0x006A, r18	; 0x80006a <txHead>
   aa:	08 95       	ret
 
 000000ac <usiTwiReceiveByte>:
@@ -176,23 +184,23 @@ flushTwiBuffers(
 
   // wait for Rx data
   while ( rxHead == rxTail );
-  ac:	90 91 78 00 	lds	r25, 0x0078
-  b0:	80 91 77 00 	lds	r24, 0x0077
+  ac:	90 91 7c 00 	lds	r25, 0x007C	; 0x80007c <rxHead>
+  b0:	80 91 7b 00 	lds	r24, 0x007B	; 0x80007b <rxTail>
   b4:	98 17       	cp	r25, r24
   b6:	d1 f3       	breq	.-12     	; 0xac <usiTwiReceiveByte>
 
   // calculate buffer index
   rxTail = ( rxTail + 1 ) & TWI_RX_BUFFER_MASK;
-  b8:	80 91 77 00 	lds	r24, 0x0077
+  b8:	80 91 7b 00 	lds	r24, 0x007B	; 0x80007b <rxTail>
   bc:	8f 5f       	subi	r24, 0xFF	; 255
   be:	8f 70       	andi	r24, 0x0F	; 15
-  c0:	80 93 77 00 	sts	0x0077, r24
+  c0:	80 93 7b 00 	sts	0x007B, r24	; 0x80007b <rxTail>
 
   // return data from the buffer.
   return rxBuf[ rxTail ];
-  c4:	e0 91 77 00 	lds	r30, 0x0077
+  c4:	e0 91 7b 00 	lds	r30, 0x007B	; 0x80007b <rxTail>
   c8:	f0 e0       	ldi	r31, 0x00	; 0
-  ca:	e7 58       	subi	r30, 0x87	; 135
+  ca:	e3 58       	subi	r30, 0x83	; 131
   cc:	ff 4f       	sbci	r31, 0xFF	; 255
 
 } // end usiTwiReceiveByte
@@ -206,8 +214,8 @@ flushTwiBuffers(
 
   // return 0 (false) if the receive buffer is empty
   return rxHead != rxTail;
-  d2:	20 91 78 00 	lds	r18, 0x0078
-  d6:	90 91 77 00 	lds	r25, 0x0077
+  d2:	20 91 7c 00 	lds	r18, 0x007C	; 0x80007c <rxHead>
+  d6:	90 91 7b 00 	lds	r25, 0x007B	; 0x80007b <rxTail>
   da:	81 e0       	ldi	r24, 0x01	; 1
   dc:	29 13       	cpse	r18, r25
 
@@ -239,13 +247,13 @@ ISR( USI_START_VECTOR )
   ee:	8f 93       	push	r24
   f0:	9f 93       	push	r25
 	twi_stopped = 0;
-  f2:	10 92 bd 00 	sts	0x00BD, r1
-  f6:	10 92 bc 00 	sts	0x00BC, r1
+  f2:	10 92 21 01 	sts	0x0121, r1	; 0x800121 <twi_stopped+0x1>
+  f6:	10 92 20 01 	sts	0x0120, r1	; 0x800120 <twi_stopped>
 
   // set default starting conditions for new TWI package
   overflowState = USI_SLAVE_CHECK_ADDRESS;
-  fa:	10 92 ba 00 	sts	0x00BA, r1
-  fe:	10 92 b9 00 	sts	0x00B9, r1
+  fa:	10 92 ee 00 	sts	0x00EE, r1	; 0x8000ee <overflowState+0x1>
+  fe:	10 92 ed 00 	sts	0x00ED, r1	; 0x8000ed <overflowState>
 
   // set SDA as input
   DDR_USI &= ~( 1 << PORT_USI_SDA );
@@ -293,8 +301,8 @@ ISR( USI_START_VECTOR )
 		twi_stopped = 1;
  116:	81 e0       	ldi	r24, 0x01	; 1
  118:	90 e0       	ldi	r25, 0x00	; 0
- 11a:	90 93 bd 00 	sts	0x00BD, r25
- 11e:	80 93 bc 00 	sts	0x00BC, r24
+ 11a:	90 93 21 01 	sts	0x0121, r25	; 0x800121 <twi_stopped+0x1>
+ 11e:	80 93 20 01 	sts	0x0120, r24	; 0x800120 <twi_stopped>
   } // end if
 
   USISR =
@@ -343,8 +351,8 @@ ISR( USI_OVERFLOW_VECTOR )
  14e:	ff 93       	push	r31
 
   switch ( overflowState )
- 150:	80 91 b9 00 	lds	r24, 0x00B9
- 154:	90 91 ba 00 	lds	r25, 0x00BA
+ 150:	80 91 ed 00 	lds	r24, 0x00ED	; 0x8000ed <overflowState>
+ 154:	90 91 ee 00 	lds	r25, 0x00EE	; 0x8000ee <overflowState+0x1>
  158:	82 30       	cpi	r24, 0x02	; 2
  15a:	91 05       	cpc	r25, r1
  15c:	09 f4       	brne	.+2      	; 0x160 <__vector_14+0x26>
@@ -364,43 +372,43 @@ ISR( USI_OVERFLOW_VECTOR )
       // put data into buffer
       // Not necessary, but prevents warnings
       rxHead = ( rxHead + 1 ) & TWI_RX_BUFFER_MASK;
- 172:	80 91 78 00 	lds	r24, 0x0078
+ 172:	80 91 7c 00 	lds	r24, 0x007C	; 0x80007c <rxHead>
  176:	8f 5f       	subi	r24, 0xFF	; 255
  178:	8f 70       	andi	r24, 0x0F	; 15
- 17a:	80 93 78 00 	sts	0x0078, r24
+ 17a:	80 93 7c 00 	sts	0x007C, r24	; 0x80007c <rxHead>
       rxBuf[ rxHead ] = USIDR;
- 17e:	e0 91 78 00 	lds	r30, 0x0078
+ 17e:	e0 91 7c 00 	lds	r30, 0x007C	; 0x80007c <rxHead>
  182:	8f b1       	in	r24, 0x0f	; 15
  184:	f0 e0       	ldi	r31, 0x00	; 0
- 186:	e7 58       	subi	r30, 0x87	; 135
+ 186:	e3 58       	subi	r30, 0x83	; 131
  188:	ff 4f       	sbci	r31, 0xFF	; 255
  18a:	80 83       	st	Z, r24
-			if(val_index < 3) {
- 18c:	80 91 bb 00 	lds	r24, 0x00BB
- 190:	83 30       	cpi	r24, 0x03	; 3
+			if(val_index < 4) {
+ 18c:	80 91 1f 01 	lds	r24, 0x011F	; 0x80011f <val_index>
+ 190:	84 30       	cpi	r24, 0x04	; 4
  192:	58 f4       	brcc	.+22     	; 0x1aa <__vector_14+0x70>
-				// store 1st 3 values in color values array
+				// store ring # & 1st 3 values in color values array
 				value[val_index] = rxBuf[rxHead];
- 194:	a0 91 78 00 	lds	r26, 0x0078
- 198:	e8 2f       	mov	r30, r24
- 19a:	f0 e0       	ldi	r31, 0x00	; 0
- 19c:	e2 54       	subi	r30, 0x42	; 66
- 19e:	ff 4f       	sbci	r31, 0xFF	; 255
- 1a0:	b0 e0       	ldi	r27, 0x00	; 0
- 1a2:	a7 58       	subi	r26, 0x87	; 135
- 1a4:	bf 4f       	sbci	r27, 0xFF	; 255
- 1a6:	9c 91       	ld	r25, X
- 1a8:	90 83       	st	Z, r25
+ 194:	e0 91 7c 00 	lds	r30, 0x007C	; 0x80007c <rxHead>
+ 198:	a8 2f       	mov	r26, r24
+ 19a:	b0 e0       	ldi	r27, 0x00	; 0
+ 19c:	ad 59       	subi	r26, 0x9D	; 157
+ 19e:	bf 4f       	sbci	r27, 0xFF	; 255
+ 1a0:	f0 e0       	ldi	r31, 0x00	; 0
+ 1a2:	e3 58       	subi	r30, 0x83	; 131
+ 1a4:	ff 4f       	sbci	r31, 0xFF	; 255
+ 1a6:	90 81       	ld	r25, Z
+ 1a8:	9c 93       	st	X, r25
 			}
 			val_index++;
  1aa:	8f 5f       	subi	r24, 0xFF	; 255
- 1ac:	80 93 bb 00 	sts	0x00BB, r24
+ 1ac:	80 93 1f 01 	sts	0x011F, r24	; 0x80011f <val_index>
       // next USI_SLAVE_REQUEST_DATA
       overflowState = USI_SLAVE_REQUEST_DATA;
  1b0:	84 e0       	ldi	r24, 0x04	; 4
  1b2:	90 e0       	ldi	r25, 0x00	; 0
- 1b4:	90 93 ba 00 	sts	0x00BA, r25
- 1b8:	80 93 b9 00 	sts	0x00B9, r24
+ 1b4:	90 93 ee 00 	sts	0x00EE, r25	; 0x8000ee <overflowState+0x1>
+ 1b8:	80 93 ed 00 	sts	0x00ED, r24	; 0x8000ed <overflowState>
       SET_USI_TO_SEND_ACK( );
  1bc:	1f b8       	out	0x0f, r1	; 15
  1be:	b8 9a       	sbi	0x17, 0	; 23
@@ -438,20 +446,20 @@ ISR( USI_OVERFLOW_VECTOR )
     case USI_SLAVE_SEND_DATA:
       // Get data from Buffer
       if ( txHead != txTail )
- 1e2:	90 91 66 00 	lds	r25, 0x0066
- 1e6:	80 91 65 00 	lds	r24, 0x0065
+ 1e2:	90 91 6a 00 	lds	r25, 0x006A	; 0x80006a <txHead>
+ 1e6:	80 91 69 00 	lds	r24, 0x0069	; 0x800069 <txTail>
  1ea:	98 17       	cp	r25, r24
  1ec:	51 f1       	breq	.+84     	; 0x242 <__vector_14+0x108>
       {
         txTail = ( txTail + 1 ) & TWI_TX_BUFFER_MASK;
- 1ee:	80 91 65 00 	lds	r24, 0x0065
+ 1ee:	80 91 69 00 	lds	r24, 0x0069	; 0x800069 <txTail>
  1f2:	8f 5f       	subi	r24, 0xFF	; 255
  1f4:	8f 70       	andi	r24, 0x0F	; 15
- 1f6:	80 93 65 00 	sts	0x0065, r24
+ 1f6:	80 93 69 00 	sts	0x0069, r24	; 0x800069 <txTail>
         USIDR = txBuf[ txTail ];
- 1fa:	e0 91 65 00 	lds	r30, 0x0065
+ 1fa:	e0 91 69 00 	lds	r30, 0x0069	; 0x800069 <txTail>
  1fe:	f0 e0       	ldi	r31, 0x00	; 0
- 200:	e9 59       	subi	r30, 0x99	; 153
+ 200:	e5 59       	subi	r30, 0x95	; 149
  202:	ff 4f       	sbci	r31, 0xFF	; 255
  204:	80 81       	ld	r24, Z
  206:	8f b9       	out	0x0f, r24	; 15
@@ -463,8 +471,8 @@ ISR( USI_OVERFLOW_VECTOR )
       overflowState = USI_SLAVE_REQUEST_REPLY_FROM_SEND_DATA;
  208:	82 e0       	ldi	r24, 0x02	; 2
  20a:	90 e0       	ldi	r25, 0x00	; 0
- 20c:	90 93 ba 00 	sts	0x00BA, r25
- 210:	80 93 b9 00 	sts	0x00B9, r24
+ 20c:	90 93 ee 00 	sts	0x00EE, r25	; 0x8000ee <overflowState+0x1>
+ 210:	80 93 ed 00 	sts	0x00ED, r24	; 0x8000ed <overflowState>
       SET_USI_TO_SEND_DATA( );
  214:	b8 9a       	sbi	0x17, 0	; 23
  216:	80 e7       	ldi	r24, 0x70	; 112
@@ -479,8 +487,8 @@ ISR( USI_OVERFLOW_VECTOR )
       overflowState = USI_SLAVE_GET_DATA_AND_SEND_ACK;
  21c:	85 e0       	ldi	r24, 0x05	; 5
  21e:	90 e0       	ldi	r25, 0x00	; 0
- 220:	90 93 ba 00 	sts	0x00BA, r25
- 224:	80 93 b9 00 	sts	0x00B9, r24
+ 220:	90 93 ee 00 	sts	0x00EE, r25	; 0x8000ee <overflowState+0x1>
+ 224:	80 93 ed 00 	sts	0x00ED, r24	; 0x8000ed <overflowState>
       SET_USI_TO_READ_DATA( );
  228:	b8 98       	cbi	0x17, 0	; 23
  22a:	80 e7       	ldi	r24, 0x70	; 112
@@ -498,7 +506,7 @@ ISR( USI_OVERFLOW_VECTOR )
  234:	e1 f0       	breq	.+56     	; 0x26e <__stack+0xf>
  236:	8f b1       	in	r24, 0x0f	; 15
  238:	86 95       	lsr	r24
- 23a:	90 91 c1 00 	lds	r25, 0x00C1
+ 23a:	90 91 22 01 	lds	r25, 0x0122	; 0x800122 <slaveAddress>
  23e:	89 17       	cp	r24, r25
  240:	b1 f0       	breq	.+44     	; 0x26e <__stack+0xf>
         USIDR = txBuf[ txTail ];
@@ -514,8 +522,8 @@ ISR( USI_OVERFLOW_VECTOR )
 				twi_stopped = 1;
  24a:	81 e0       	ldi	r24, 0x01	; 1
  24c:	90 e0       	ldi	r25, 0x00	; 0
- 24e:	90 93 bd 00 	sts	0x00BD, r25
- 252:	80 93 bc 00 	sts	0x00BC, r24
+ 24e:	90 93 21 01 	sts	0x0121, r25	; 0x800121 <twi_stopped+0x1>
+ 252:	80 93 20 01 	sts	0x0120, r24	; 0x800120 <twi_stopped>
         return;
  256:	b6 cf       	rjmp	.-148    	; 0x1c4 <__vector_14+0x8a>
       break;
@@ -526,8 +534,8 @@ ISR( USI_OVERFLOW_VECTOR )
       overflowState = USI_SLAVE_CHECK_REPLY_FROM_SEND_DATA;
  258:	83 e0       	ldi	r24, 0x03	; 3
  25a:	90 e0       	ldi	r25, 0x00	; 0
- 25c:	90 93 ba 00 	sts	0x00BA, r25
- 260:	80 93 b9 00 	sts	0x00B9, r24
+ 25c:	90 93 ee 00 	sts	0x00EE, r25	; 0x8000ee <overflowState+0x1>
+ 260:	80 93 ed 00 	sts	0x00ED, r24	; 0x8000ed <overflowState>
       SET_USI_TO_READ_ACK( );
  264:	b8 98       	cbi	0x17, 0	; 23
  266:	1f b8       	out	0x0f, r1	; 15
@@ -547,8 +555,8 @@ ISR( USI_OVERFLOW_VECTOR )
           overflowState = USI_SLAVE_SEND_DATA;
  272:	81 e0       	ldi	r24, 0x01	; 1
  274:	90 e0       	ldi	r25, 0x00	; 0
- 276:	90 93 ba 00 	sts	0x00BA, r25
- 27a:	80 93 b9 00 	sts	0x00B9, r24
+ 276:	90 93 ee 00 	sts	0x00EE, r25	; 0x8000ee <overflowState+0x1>
+ 27a:	80 93 ed 00 	sts	0x00ED, r24	; 0x8000ed <overflowState>
  27e:	9e cf       	rjmp	.-196    	; 0x1bc <__vector_14+0x82>
       break;
 
@@ -569,11 +577,11 @@ ISR( USI_OVERFLOW_VECTOR )
           overflowState = USI_SLAVE_REQUEST_DATA;
  28a:	84 e0       	ldi	r24, 0x04	; 4
  28c:	90 e0       	ldi	r25, 0x00	; 0
- 28e:	90 93 ba 00 	sts	0x00BA, r25
- 292:	80 93 b9 00 	sts	0x00B9, r24
+ 28e:	90 93 ee 00 	sts	0x00EE, r25	; 0x8000ee <overflowState+0x1>
+ 292:	80 93 ed 00 	sts	0x00ED, r24	; 0x8000ed <overflowState>
 					// prepare to receive color values, starting with red
 					val_index = 0;
- 296:	10 92 bb 00 	sts	0x00BB, r1
+ 296:	10 92 1f 01 	sts	0x011F, r1	; 0x80011f <val_index>
  29a:	90 cf       	rjmp	.-224    	; 0x1bc <__vector_14+0x82>
 
 0000029c <ws2812_setleds>:
@@ -645,12 +653,12 @@ void inline ws2812_sendarray_mask(uint8_t *data,uint16_t datlen,uint8_t maskhi)
   
   SREG=sreg_prev;
  2dc:	6f bf       	out	0x3f, r22	; 63
-		//round up by default
-		__ticks_dc = (uint32_t)(ceil(fabs(__tmp)));
-	#endif
+   \note
 
-	__builtin_avr_delay_cycles(__ticks_dc);
-
+   The implementation of _delay_ms() based on
+   __builtin_avr_delay_cycles() is not backward compatible with older
+   implementations.  In order to get functionality backward compatible
+   with previous versions, the macro \c __DELAY_BACKWARD_COMPATIBLE__
  2de:	85 e8       	ldi	r24, 0x85	; 133
  2e0:	8a 95       	dec	r24
  2e2:	f1 f7       	brne	.-4      	; 0x2e0 <loop29+0x1c>
@@ -834,340 +842,381 @@ void inline ws2812_sendarray_mask(uint8_t *data,uint16_t datlen,uint8_t maskhi)
 	uint8_t i;
 	uint8_t displayed = 0;  // have we displayed new values yet?
 
-  DDRB  = RED_PIN | GRN_PIN | BLU_PIN; // Set to output
+  DDRB  = ONE_PIN | TWO_PIN | THREE_PIN; // Set to output
  3b0:	8a e1       	ldi	r24, 0x1A	; 26
  3b2:	87 bb       	out	0x17, r24	; 23
-  PORTB = RED_PIN | GRN_PIN | BLU_PIN; // Startup pattern
+  PORTB = ONE_PIN | TWO_PIN | THREE_PIN; // Startup pattern
  3b4:	88 bb       	out	0x18, r24	; 24
-  // DDRB  = GRN_PIN; // Set to output
-  // PORTB = GRN_PIN; // Startup pattern
+  // DDRB  = ONE_PIN; // Set to output
+  // PORTB = ONE_PIN; // Startup pattern
   // DDRB |= 0x08; // debug
 
 	for(val_index = 0; val_index < 3; val_index++) {
 		value[val_index] = 0;
- 3b6:	10 92 be 00 	sts	0x00BE, r1
- 3ba:	10 92 c0 00 	sts	0x00C0, r1
+ 3b6:	10 92 63 00 	sts	0x0063, r1	; 0x800063 <value>
+ 3ba:	10 92 65 00 	sts	0x0065, r1	; 0x800065 <value+0x2>
 	}
 	value[1] = 15;
  3be:	8f e0       	ldi	r24, 0x0F	; 15
- 3c0:	80 93 bf 00 	sts	0x00BF, r24
+ 3c0:	80 93 64 00 	sts	0x0064, r24	; 0x800064 <value+0x1>
 	val_index = 0;
- 3c4:	10 92 bb 00 	sts	0x00BB, r1
+ 3c4:	10 92 1f 01 	sts	0x011F, r1	; 0x80011f <val_index>
+	#else
 		//round up by default
 		__ticks_dc = (uint32_t)(ceil(fabs(__tmp)));
 	#endif
 
 	__builtin_avr_delay_cycles(__ticks_dc);
-
  3c8:	2f ef       	ldi	r18, 0xFF	; 255
- 3ca:	34 e3       	ldi	r19, 0x34	; 52
- 3cc:	8c e0       	ldi	r24, 0x0C	; 12
+ 3ca:	84 e3       	ldi	r24, 0x34	; 52
+ 3cc:	9c e0       	ldi	r25, 0x0C	; 12
  3ce:	21 50       	subi	r18, 0x01	; 1
- 3d0:	30 40       	sbci	r19, 0x00	; 0
- 3d2:	80 40       	sbci	r24, 0x00	; 0
+ 3d0:	80 40       	sbci	r24, 0x00	; 0
+ 3d2:	90 40       	sbci	r25, 0x00	; 0
  3d4:	e1 f7       	brne	.-8      	; 0x3ce <main+0x1e>
  3d6:	00 c0       	rjmp	.+0      	; 0x3d8 <main+0x28>
  3d8:	00 00       	nop
- 3da:	c9 e8       	ldi	r28, 0x89	; 137
+ 3da:	cd e8       	ldi	r28, 0x8D	; 141
  3dc:	d0 e0       	ldi	r29, 0x00	; 0
- 3de:	aa e8       	ldi	r26, 0x8A	; 138
+ 3de:	af ee       	ldi	r26, 0xEF	; 239
  3e0:	b0 e0       	ldi	r27, 0x00	; 0
- 3e2:	eb e8       	ldi	r30, 0x8B	; 139
+ 3e2:	ed eb       	ldi	r30, 0xBD	; 189
  3e4:	f0 e0       	ldi	r31, 0x00	; 0
 
 	// init to Bears colors - alternating blue and white
 	_delay_ms(500); // wait until neo-pixels power up
-	for(i = 0; i < NUM_PIXELS; i++) {
- 3e6:	20 e0       	ldi	r18, 0x00	; 0
-		if(i % 2) {
-			pixels[i].g = 0;
-			pixels[i].r = 0;
-			pixels[i].b = 20;
+	for(uint8_t k = 0; k < NUM_PIXELS; k++) {
+ 3e6:	90 e0       	ldi	r25, 0x00	; 0
+
+			strip3[k].r = 0;
+			strip3[k].g = 0;
+			strip3[k].b = 20;
 		} else {
-			pixels[i].g = 15;
- 3e8:	3f e0       	ldi	r19, 0x0F	; 15
+			strip1[k].r = 15;
+ 3e8:	8f e0       	ldi	r24, 0x0F	; 15
 	_delay_ms(500); // wait until neo-pixels power up
-	for(i = 0; i < NUM_PIXELS; i++) {
-		if(i % 2) {
-			pixels[i].g = 0;
-			pixels[i].r = 0;
-			pixels[i].b = 20;
- 3ea:	44 e1       	ldi	r20, 0x14	; 20
- 3ec:	09 c0       	rjmp	.+18     	; 0x400 <main+0x50>
+	for(uint8_t k = 0; k < NUM_PIXELS; k++) {
+		if(k % 2) {
+			strip1[k].r = 0;
+			strip1[k].g = 0;
+			strip1[k].b = 20;
+ 3ea:	24 e1       	ldi	r18, 0x14	; 20
+ 3ec:	13 c0       	rjmp	.+38     	; 0x414 <__LOCK_REGION_LENGTH__+0x14>
 
 	// init to Bears colors - alternating blue and white
 	_delay_ms(500); // wait until neo-pixels power up
-	for(i = 0; i < NUM_PIXELS; i++) {
-		if(i % 2) {
-			pixels[i].g = 0;
- 3ee:	18 82       	st	Y, r1
-			pixels[i].r = 0;
- 3f0:	1c 92       	st	X, r1
-			pixels[i].b = 20;
- 3f2:	40 83       	st	Z, r20
+	for(uint8_t k = 0; k < NUM_PIXELS; k++) {
+		if(k % 2) {
+			strip1[k].r = 0;
+ 3ee:	11 82       	std	Z+1, r1	; 0x01
+			strip1[k].g = 0;
+ 3f0:	10 82       	st	Z, r1
+			strip1[k].b = 20;
+ 3f2:	22 83       	std	Z+2, r18	; 0x02
+
+			strip2[k].r = 0;
+ 3f4:	11 96       	adiw	r26, 0x01	; 1
+ 3f6:	1c 92       	st	X, r1
+ 3f8:	11 97       	sbiw	r26, 0x01	; 1
+			strip2[k].g = 0;
+ 3fa:	1c 92       	st	X, r1
+			strip2[k].b = 20;
+ 3fc:	12 96       	adiw	r26, 0x02	; 2
+ 3fe:	2c 93       	st	X, r18
+ 400:	12 97       	sbiw	r26, 0x02	; 2
+
+			strip3[k].r = 0;
+ 402:	19 82       	std	Y+1, r1	; 0x01
+			strip3[k].g = 0;
+ 404:	18 82       	st	Y, r1
+			strip3[k].b = 20;
+ 406:	2a 83       	std	Y+2, r18	; 0x02
 	value[1] = 15;
 	val_index = 0;
 
 	// init to Bears colors - alternating blue and white
 	_delay_ms(500); // wait until neo-pixels power up
-	for(i = 0; i < NUM_PIXELS; i++) {
- 3f4:	2f 5f       	subi	r18, 0xFF	; 255
- 3f6:	23 96       	adiw	r28, 0x03	; 3
- 3f8:	13 96       	adiw	r26, 0x03	; 3
- 3fa:	33 96       	adiw	r30, 0x03	; 3
- 3fc:	20 31       	cpi	r18, 0x10	; 16
- 3fe:	59 f0       	breq	.+22     	; 0x416 <main+0x66>
-		if(i % 2) {
- 400:	20 fd       	sbrc	r18, 0
- 402:	f5 cf       	rjmp	.-22     	; 0x3ee <main+0x3e>
-			pixels[i].g = 0;
-			pixels[i].r = 0;
-			pixels[i].b = 20;
+	for(uint8_t k = 0; k < NUM_PIXELS; k++) {
+ 408:	9f 5f       	subi	r25, 0xFF	; 255
+ 40a:	33 96       	adiw	r30, 0x03	; 3
+ 40c:	13 96       	adiw	r26, 0x03	; 3
+ 40e:	23 96       	adiw	r28, 0x03	; 3
+ 410:	90 31       	cpi	r25, 0x10	; 16
+ 412:	a9 f0       	breq	.+42     	; 0x43e <__LOCK_REGION_LENGTH__+0x3e>
+		if(k % 2) {
+ 414:	90 fd       	sbrc	r25, 0
+ 416:	eb cf       	rjmp	.-42     	; 0x3ee <main+0x3e>
+
+			strip3[k].r = 0;
+			strip3[k].g = 0;
+			strip3[k].b = 20;
 		} else {
-			pixels[i].g = 15;
- 404:	38 83       	st	Y, r19
-			pixels[i].r = 15;
- 406:	3c 93       	st	X, r19
-			pixels[i].b = 15;
- 408:	30 83       	st	Z, r19
+			strip1[k].r = 15;
+ 418:	81 83       	std	Z+1, r24	; 0x01
+			strip1[k].g = 15;
+ 41a:	80 83       	st	Z, r24
+			strip1[k].b = 15;
+ 41c:	82 83       	std	Z+2, r24	; 0x02
+
+			strip2[k].r = 15;
+ 41e:	11 96       	adiw	r26, 0x01	; 1
+ 420:	8c 93       	st	X, r24
+ 422:	11 97       	sbiw	r26, 0x01	; 1
+			strip2[k].g = 15;
+ 424:	8c 93       	st	X, r24
+			strip2[k].b = 15;
+ 426:	12 96       	adiw	r26, 0x02	; 2
+ 428:	8c 93       	st	X, r24
+ 42a:	12 97       	sbiw	r26, 0x02	; 2
+						
+			strip3[k].r = 15;
+ 42c:	89 83       	std	Y+1, r24	; 0x01
+			strip3[k].g = 15;
+ 42e:	88 83       	st	Y, r24
+			strip3[k].b = 15;
+ 430:	8a 83       	std	Y+2, r24	; 0x02
 	value[1] = 15;
 	val_index = 0;
 
 	// init to Bears colors - alternating blue and white
 	_delay_ms(500); // wait until neo-pixels power up
-	for(i = 0; i < NUM_PIXELS; i++) {
- 40a:	2f 5f       	subi	r18, 0xFF	; 255
- 40c:	23 96       	adiw	r28, 0x03	; 3
- 40e:	13 96       	adiw	r26, 0x03	; 3
- 410:	33 96       	adiw	r30, 0x03	; 3
- 412:	20 31       	cpi	r18, 0x10	; 16
- 414:	a9 f7       	brne	.-22     	; 0x400 <main+0x50>
-			pixels[i].g = 15;
-			pixels[i].r = 15;
-			pixels[i].b = 15;
+	for(uint8_t k = 0; k < NUM_PIXELS; k++) {
+ 432:	9f 5f       	subi	r25, 0xFF	; 255
+ 434:	33 96       	adiw	r30, 0x03	; 3
+ 436:	13 96       	adiw	r26, 0x03	; 3
+ 438:	23 96       	adiw	r28, 0x03	; 3
+ 43a:	90 31       	cpi	r25, 0x10	; 16
+ 43c:	59 f7       	brne	.-42     	; 0x414 <__LOCK_REGION_LENGTH__+0x14>
+			strip3[k].r = 15;
+			strip3[k].g = 15;
+			strip3[k].b = 15;
 		}
 	}
-	ws2812_setleds(pixels, NUM_PIXELS);
- 416:	60 e1       	ldi	r22, 0x10	; 16
- 418:	70 e0       	ldi	r23, 0x00	; 0
- 41a:	89 e8       	ldi	r24, 0x89	; 137
- 41c:	90 e0       	ldi	r25, 0x00	; 0
- 41e:	3e df       	rcall	.-388    	; 0x29c <ws2812_setleds>
- 420:	9f ef       	ldi	r25, 0xFF	; 255
- 422:	20 e7       	ldi	r18, 0x70	; 112
- 424:	32 e0       	ldi	r19, 0x02	; 2
- 426:	91 50       	subi	r25, 0x01	; 1
- 428:	20 40       	sbci	r18, 0x00	; 0
- 42a:	30 40       	sbci	r19, 0x00	; 0
- 42c:	e1 f7       	brne	.-8      	; 0x426 <main+0x76>
- 42e:	00 c0       	rjmp	.+0      	; 0x430 <main+0x80>
- 430:	00 00       	nop
-	_delay_ms(100);
+	ws2812_setleds_pin(strip1, NUM_PIXELS, ONE_PIN);
+ 43e:	42 e0       	ldi	r20, 0x02	; 2
+ 440:	60 e1       	ldi	r22, 0x10	; 16
+ 442:	70 e0       	ldi	r23, 0x00	; 0
+ 444:	8d eb       	ldi	r24, 0xBD	; 189
+ 446:	90 e0       	ldi	r25, 0x00	; 0
+ 448:	4f df       	rcall	.-354    	; 0x2e8 <ws2812_setleds_pin>
+	ws2812_setleds_pin(strip2, NUM_PIXELS, TWO_PIN);
+ 44a:	48 e0       	ldi	r20, 0x08	; 8
+ 44c:	60 e1       	ldi	r22, 0x10	; 16
+ 44e:	70 e0       	ldi	r23, 0x00	; 0
+ 450:	8f ee       	ldi	r24, 0xEF	; 239
+ 452:	90 e0       	ldi	r25, 0x00	; 0
+ 454:	49 df       	rcall	.-366    	; 0x2e8 <ws2812_setleds_pin>
+	ws2812_setleds_pin(strip3, NUM_PIXELS, THREE_PIN);
+ 456:	40 e1       	ldi	r20, 0x10	; 16
+ 458:	60 e1       	ldi	r22, 0x10	; 16
+ 45a:	70 e0       	ldi	r23, 0x00	; 0
+ 45c:	8d e8       	ldi	r24, 0x8D	; 141
+ 45e:	90 e0       	ldi	r25, 0x00	; 0
+ 460:	43 df       	rcall	.-378    	; 0x2e8 <ws2812_setleds_pin>
+ 462:	2f ef       	ldi	r18, 0xFF	; 255
+ 464:	80 e7       	ldi	r24, 0x70	; 112
+ 466:	92 e0       	ldi	r25, 0x02	; 2
+ 468:	21 50       	subi	r18, 0x01	; 1
+ 46a:	80 40       	sbci	r24, 0x00	; 0
+ 46c:	90 40       	sbci	r25, 0x00	; 0
+ 46e:	e1 f7       	brne	.-8      	; 0x468 <__LOCK_REGION_LENGTH__+0x68>
+ 470:	00 c0       	rjmp	.+0      	; 0x472 <__LOCK_REGION_LENGTH__+0x72>
+ 472:	00 00       	nop
+ 474:	2f ef       	ldi	r18, 0xFF	; 255
+ 476:	84 e3       	ldi	r24, 0x34	; 52
+ 478:	9c e0       	ldi	r25, 0x0C	; 12
+ 47a:	21 50       	subi	r18, 0x01	; 1
+ 47c:	80 40       	sbci	r24, 0x00	; 0
+ 47e:	90 40       	sbci	r25, 0x00	; 0
+ 480:	e1 f7       	brne	.-8      	; 0x47a <__LOCK_REGION_LENGTH__+0x7a>
+ 482:	00 c0       	rjmp	.+0      	; 0x484 <__LOCK_REGION_LENGTH__+0x84>
+ 484:	00 00       	nop
+		_delay_ms(100);
 
-	// do it again
-	ws2812_setleds(pixels, NUM_PIXELS);
- 432:	60 e1       	ldi	r22, 0x10	; 16
- 434:	70 e0       	ldi	r23, 0x00	; 0
- 436:	89 e8       	ldi	r24, 0x89	; 137
- 438:	90 e0       	ldi	r25, 0x00	; 0
- 43a:	30 df       	rcall	.-416    	; 0x29c <ws2812_setleds>
- 43c:	8f ef       	ldi	r24, 0xFF	; 255
- 43e:	94 e3       	ldi	r25, 0x34	; 52
- 440:	2c e0       	ldi	r18, 0x0C	; 12
- 442:	81 50       	subi	r24, 0x01	; 1
- 444:	90 40       	sbci	r25, 0x00	; 0
- 446:	20 40       	sbci	r18, 0x00	; 0
- 448:	e1 f7       	brne	.-8      	; 0x442 <main+0x92>
- 44a:	00 c0       	rjmp	.+0      	; 0x44c <main+0x9c>
- 44c:	00 00       	nop
 	_delay_ms(500);
 
   usiTwiSlaveInit(TWI_slaveAddress);
- 44e:	80 91 63 00 	lds	r24, 0x0063
- 452:	01 de       	rcall	.-1022   	; 0x56 <usiTwiSlaveInit>
+ 486:	80 91 67 00 	lds	r24, 0x0067	; 0x800067 <TWI_slaveAddress>
+ 48a:	e5 dd       	rcall	.-1078   	; 0x56 <usiTwiSlaveInit>
 
   // __enable_interrupt();
 	sei();
- 454:	78 94       	sei
-// __C_task void main( void )
-int main( void )
-{
-  unsigned char temp;
-	uint8_t i;
-	uint8_t displayed = 0;  // have we displayed new values yet?
- 456:	c0 e0       	ldi	r28, 0x00	; 0
+ 48c:	78 94       	sei
+ 48e:	8f e1       	ldi	r24, 0x1F	; 31
+ 490:	e8 2e       	mov	r14, r24
+ 492:	81 e0       	ldi	r24, 0x01	; 1
+ 494:	f8 2e       	mov	r15, r24
+ 496:	0d eb       	ldi	r16, 0xBD	; 189
+ 498:	10 e0       	ldi	r17, 0x00	; 0
+ 49a:	cd ee       	ldi	r28, 0xED	; 237
+ 49c:	d0 e0       	ldi	r29, 0x00	; 0
 
   // This loop runs forever. If the TWI Transceiver is busy the execution will just continue doing other operations.
   for(;;)
   {
 
     if( usiTwiDataInReceiveBuffer() )
- 458:	3c de       	rcall	.-904    	; 0xd2 <usiTwiDataInReceiveBuffer>
- 45a:	81 11       	cpse	r24, r1
- 45c:	34 c0       	rjmp	.+104    	; 0x4c6 <main+0x116>
+ 49e:	19 de       	rcall	.-974    	; 0xd2 <usiTwiDataInReceiveBuffer>
+ 4a0:	81 11       	cpse	r24, r1
+ 4a2:	24 c0       	rjmp	.+72     	; 0x4ec <__LOCK_REGION_LENGTH__+0xec>
 				*/
         // usiTwiTransmitByte(temp);
     }
 
 		// wait for whole message
-		if(!displayed && (val_index >= 3)) {
- 45e:	cc 23       	and	r28, r28
- 460:	99 f1       	breq	.+102    	; 0x4c8 <main+0x118>
- 462:	c1 e0       	ldi	r28, 0x01	; 1
- 464:	ae eb       	ldi	r26, 0xBE	; 190
- 466:	b0 e0       	ldi	r27, 0x00	; 0
- 468:	e0 e6       	ldi	r30, 0x60	; 96
- 46a:	f0 e0       	ldi	r31, 0x00	; 0
-			// if(i != 1) continue;
-			if(i == 2) {
-				// skip blue, that's where neo-pixel is
-				continue;
-			}
-			if(count >= value[i]) {
- 46c:	9d 91       	ld	r25, X+
- 46e:	80 91 64 00 	lds	r24, 0x0064
- 472:	89 17       	cp	r24, r25
- 474:	08 f4       	brcc	.+2      	; 0x478 <main+0xc8>
- 476:	47 c0       	rjmp	.+142    	; 0x506 <main+0x156>
-				// turn led off
-				PORTB |= pins[i];
- 478:	88 b3       	in	r24, 0x18	; 24
- 47a:	90 81       	ld	r25, Z
- 47c:	89 2b       	or	r24, r25
- 47e:	88 bb       	out	0x18, r24	; 24
- 480:	31 96       	adiw	r30, 0x01	; 1
-    // Do something else while waiting for the TWI transceiver to complete.
-    // __no_operation(); // Put own code here.
-		// if 
-		for(i = 0; i < 3; i++) {
-			// if(i != 1) continue;
-			if(i == 2) {
- 482:	80 e0       	ldi	r24, 0x00	; 0
- 484:	a0 3c       	cpi	r26, 0xC0	; 192
- 486:	b8 07       	cpc	r27, r24
- 488:	89 f7       	brne	.-30     	; 0x46c <main+0xbc>
-			} else {
-				// turn led on
-				PORTB &= ~pins[i];
-			}
-		}
-		count++;
- 48a:	80 91 64 00 	lds	r24, 0x0064
- 48e:	8f 5f       	subi	r24, 0xFF	; 255
- 490:	80 93 64 00 	sts	0x0064, r24
-		if(count == 0) {
- 494:	81 11       	cpse	r24, r1
- 496:	e0 cf       	rjmp	.-64     	; 0x458 <main+0xa8>
-				// if(i != 1) continue;
-				if(i == 2) {
-					// skip blue, that's where neo-pixel is
-					continue;
-				}
-				if(value[i] != 0) {
- 498:	80 91 be 00 	lds	r24, 0x00BE
- 49c:	88 23       	and	r24, r24
- 49e:	31 f0       	breq	.+12     	; 0x4ac <main+0xfc>
-					// turn led on
-					PORTB &= ~pins[i];
- 4a0:	98 b3       	in	r25, 0x18	; 24
- 4a2:	80 91 60 00 	lds	r24, 0x0060
- 4a6:	80 95       	com	r24
- 4a8:	89 23       	and	r24, r25
- 4aa:	88 bb       	out	0x18, r24	; 24
-				// if(i != 1) continue;
-				if(i == 2) {
-					// skip blue, that's where neo-pixel is
-					continue;
-				}
-				if(value[i] != 0) {
- 4ac:	80 91 bf 00 	lds	r24, 0x00BF
- 4b0:	88 23       	and	r24, r24
- 4b2:	91 f2       	breq	.-92     	; 0x458 <main+0xa8>
-					// turn led on
-					PORTB &= ~pins[i];
- 4b4:	98 b3       	in	r25, 0x18	; 24
- 4b6:	80 91 61 00 	lds	r24, 0x0061
- 4ba:	80 95       	com	r24
- 4bc:	89 23       	and	r24, r25
- 4be:	88 bb       	out	0x18, r24	; 24
+		if(!displayed && (val_index >= 4)) {
+ 4a4:	80 91 1f 01 	lds	r24, 0x011F	; 0x80011f <val_index>
+ 4a8:	84 30       	cpi	r24, 0x04	; 4
+ 4aa:	c8 f3       	brcs	.-14     	; 0x49e <__LOCK_REGION_LENGTH__+0x9e>
+			switch(value[0]) {
+ 4ac:	80 91 63 00 	lds	r24, 0x0063	; 0x800063 <value>
+ 4b0:	82 30       	cpi	r24, 0x02	; 2
+ 4b2:	a1 f1       	breq	.+104    	; 0x51c <__LOCK_REGION_LENGTH__+0x11c>
+ 4b4:	83 30       	cpi	r24, 0x03	; 3
+ 4b6:	e1 f0       	breq	.+56     	; 0x4f0 <__LOCK_REGION_LENGTH__+0xf0>
+ 4b8:	81 30       	cpi	r24, 0x01	; 1
+ 4ba:	89 f7       	brne	.-30     	; 0x49e <__LOCK_REGION_LENGTH__+0x9e>
+ 4bc:	20 91 64 00 	lds	r18, 0x0064	; 0x800064 <value+0x1>
+ 4c0:	90 91 65 00 	lds	r25, 0x0065	; 0x800065 <value+0x2>
+ 4c4:	80 91 66 00 	lds	r24, 0x0066	; 0x800066 <value+0x3>
+ 4c8:	ed eb       	ldi	r30, 0xBD	; 189
+ 4ca:	f0 e0       	ldi	r31, 0x00	; 0
+
+				case 1:
+					for(i = 0; i < NUM_PIXELS; i++) {
+						strip1[i].r = value[1];
+ 4cc:	21 83       	std	Z+1, r18	; 0x01
+						strip1[i].g = value[2];
+ 4ce:	90 83       	st	Z, r25
+						strip1[i].b = value[3];
+ 4d0:	82 83       	std	Z+2, r24	; 0x02
+ 4d2:	33 96       	adiw	r30, 0x03	; 3
+		// wait for whole message
+		if(!displayed && (val_index >= 4)) {
+			switch(value[0]) {
+
+				case 1:
+					for(i = 0; i < NUM_PIXELS; i++) {
+ 4d4:	ce 17       	cp	r28, r30
+ 4d6:	df 07       	cpc	r29, r31
+ 4d8:	c9 f7       	brne	.-14     	; 0x4cc <__LOCK_REGION_LENGTH__+0xcc>
+						strip1[i].r = value[1];
+						strip1[i].g = value[2];
+						strip1[i].b = value[3];
+					}
+					ws2812_setleds_pin(strip1, NUM_PIXELS, ONE_PIN);
+ 4da:	42 e0       	ldi	r20, 0x02	; 2
+ 4dc:	60 e1       	ldi	r22, 0x10	; 16
+ 4de:	70 e0       	ldi	r23, 0x00	; 0
+ 4e0:	8d eb       	ldi	r24, 0xBD	; 189
+ 4e2:	90 e0       	ldi	r25, 0x00	; 0
+ 4e4:	01 df       	rcall	.-510    	; 0x2e8 <ws2812_setleds_pin>
 
   // This loop runs forever. If the TWI Transceiver is busy the execution will just continue doing other operations.
   for(;;)
   {
 
     if( usiTwiDataInReceiveBuffer() )
- 4c0:	08 de       	rcall	.-1008   	; 0xd2 <usiTwiDataInReceiveBuffer>
- 4c2:	88 23       	and	r24, r24
- 4c4:	61 f2       	breq	.-104    	; 0x45e <main+0xae>
+ 4e6:	f5 dd       	rcall	.-1046   	; 0xd2 <usiTwiDataInReceiveBuffer>
+ 4e8:	88 23       	and	r24, r24
+ 4ea:	e1 f2       	breq	.-72     	; 0x4a4 <__LOCK_REGION_LENGTH__+0xa4>
     {
         temp = usiTwiReceiveByte();
- 4c6:	f2 dd       	rcall	.-1052   	; 0xac <usiTwiReceiveByte>
-				*/
+ 4ec:	df dd       	rcall	.-1090   	; 0xac <usiTwiReceiveByte>
+ 4ee:	da cf       	rjmp	.-76     	; 0x4a4 <__LOCK_REGION_LENGTH__+0xa4>
+ 4f0:	20 91 64 00 	lds	r18, 0x0064	; 0x800064 <value+0x1>
+ 4f4:	90 91 65 00 	lds	r25, 0x0065	; 0x800065 <value+0x2>
+ 4f8:	80 91 66 00 	lds	r24, 0x0066	; 0x800066 <value+0x3>
         // usiTwiTransmitByte(temp);
     }
 
 		// wait for whole message
-		if(!displayed && (val_index >= 3)) {
- 4c8:	80 91 bb 00 	lds	r24, 0x00BB
- 4cc:	83 30       	cpi	r24, 0x03	; 3
- 4ce:	08 f1       	brcs	.+66     	; 0x512 <main+0x162>
- 4d0:	20 91 bf 00 	lds	r18, 0x00BF
- 4d4:	90 91 be 00 	lds	r25, 0x00BE
- 4d8:	80 91 c0 00 	lds	r24, 0x00C0
- 4dc:	eb e8       	ldi	r30, 0x8B	; 139
- 4de:	f0 e0       	ldi	r31, 0x00	; 0
- 4e0:	df 01       	movw	r26, r30
- 4e2:	12 97       	sbiw	r26, 0x02	; 2
-			for(i = 0; i < NUM_PIXELS; i++) {
-				pixels[i].g = value[1];
- 4e4:	2c 93       	st	X, r18
- 4e6:	df 01       	movw	r26, r30
- 4e8:	11 97       	sbiw	r26, 0x01	; 1
-				pixels[i].r = value[0];
- 4ea:	9c 93       	st	X, r25
-				pixels[i].b = value[2];
- 4ec:	80 83       	st	Z, r24
- 4ee:	33 96       	adiw	r30, 0x03	; 3
+		if(!displayed && (val_index >= 4)) {
+			switch(value[0]) {
+ 4fc:	ed e8       	ldi	r30, 0x8D	; 141
+ 4fe:	f0 e0       	ldi	r31, 0x00	; 0
+					ws2812_setleds_pin(strip2, NUM_PIXELS, TWO_PIN);
+					break;
+
+				case 3:
+					for(i = 0; i < NUM_PIXELS; i++) {
+						strip3[i].r = value[1];
+ 500:	21 83       	std	Z+1, r18	; 0x01
+						strip3[i].g = value[2];
+ 502:	90 83       	st	Z, r25
+						strip3[i].b = value[3];
+ 504:	82 83       	std	Z+2, r24	; 0x02
+ 506:	33 96       	adiw	r30, 0x03	; 3
+					}
+					ws2812_setleds_pin(strip2, NUM_PIXELS, TWO_PIN);
+					break;
+
+				case 3:
+					for(i = 0; i < NUM_PIXELS; i++) {
+ 508:	0e 17       	cp	r16, r30
+ 50a:	1f 07       	cpc	r17, r31
+ 50c:	c9 f7       	brne	.-14     	; 0x500 <__LOCK_REGION_LENGTH__+0x100>
+						strip3[i].r = value[1];
+						strip3[i].g = value[2];
+						strip3[i].b = value[3];
+					}
+					ws2812_setleds_pin(strip3, NUM_PIXELS, THREE_PIN);
+ 50e:	40 e1       	ldi	r20, 0x10	; 16
+ 510:	60 e1       	ldi	r22, 0x10	; 16
+ 512:	70 e0       	ldi	r23, 0x00	; 0
+ 514:	8d e8       	ldi	r24, 0x8D	; 141
+ 516:	90 e0       	ldi	r25, 0x00	; 0
+ 518:	e7 de       	rcall	.-562    	; 0x2e8 <ws2812_setleds_pin>
+					break;
+ 51a:	c1 cf       	rjmp	.-126    	; 0x49e <__LOCK_REGION_LENGTH__+0x9e>
+ 51c:	20 91 64 00 	lds	r18, 0x0064	; 0x800064 <value+0x1>
+ 520:	90 91 65 00 	lds	r25, 0x0065	; 0x800065 <value+0x2>
+ 524:	80 91 66 00 	lds	r24, 0x0066	; 0x800066 <value+0x3>
         // usiTwiTransmitByte(temp);
     }
 
 		// wait for whole message
-		if(!displayed && (val_index >= 3)) {
-			for(i = 0; i < NUM_PIXELS; i++) {
- 4f0:	30 e0       	ldi	r19, 0x00	; 0
- 4f2:	eb 3b       	cpi	r30, 0xBB	; 187
- 4f4:	f3 07       	cpc	r31, r19
- 4f6:	a1 f7       	brne	.-24     	; 0x4e0 <main+0x130>
-				pixels[i].g = value[1];
-				pixels[i].r = value[0];
-				pixels[i].b = value[2];
-			}
-			ws2812_setleds(pixels, NUM_PIXELS);
- 4f8:	60 e1       	ldi	r22, 0x10	; 16
- 4fa:	70 e0       	ldi	r23, 0x00	; 0
- 4fc:	89 e8       	ldi	r24, 0x89	; 137
- 4fe:	90 e0       	ldi	r25, 0x00	; 0
- 500:	cd de       	rcall	.-614    	; 0x29c <ws2812_setleds>
-			displayed = 1;
- 502:	c1 e0       	ldi	r28, 0x01	; 1
- 504:	af cf       	rjmp	.-162    	; 0x464 <main+0xb4>
-			if(count >= value[i]) {
-				// turn led off
-				PORTB |= pins[i];
-			} else {
-				// turn led on
-				PORTB &= ~pins[i];
- 506:	98 b3       	in	r25, 0x18	; 24
- 508:	80 81       	ld	r24, Z
- 50a:	80 95       	com	r24
- 50c:	89 23       	and	r24, r25
- 50e:	88 bb       	out	0x18, r24	; 24
- 510:	b7 cf       	rjmp	.-146    	; 0x480 <main+0xd0>
- 512:	c0 e0       	ldi	r28, 0x00	; 0
- 514:	a7 cf       	rjmp	.-178    	; 0x464 <main+0xb4>
+		if(!displayed && (val_index >= 4)) {
+			switch(value[0]) {
+ 528:	ef ee       	ldi	r30, 0xEF	; 239
+ 52a:	f0 e0       	ldi	r31, 0x00	; 0
+					ws2812_setleds_pin(strip1, NUM_PIXELS, ONE_PIN);
+					break;
 
-00000516 <_exit>:
- 516:	f8 94       	cli
+				case 2:
+					for(i = 0; i < NUM_PIXELS; i++) {
+						strip2[i].r = value[1];
+ 52c:	21 83       	std	Z+1, r18	; 0x01
+						strip2[i].g = value[2];
+ 52e:	90 83       	st	Z, r25
+						strip2[i].b = value[3];
+ 530:	82 83       	std	Z+2, r24	; 0x02
+ 532:	33 96       	adiw	r30, 0x03	; 3
+					}
+					ws2812_setleds_pin(strip1, NUM_PIXELS, ONE_PIN);
+					break;
 
-00000518 <__stop_program>:
- 518:	ff cf       	rjmp	.-2      	; 0x518 <__stop_program>
+				case 2:
+					for(i = 0; i < NUM_PIXELS; i++) {
+ 534:	ee 16       	cp	r14, r30
+ 536:	ff 06       	cpc	r15, r31
+ 538:	c9 f7       	brne	.-14     	; 0x52c <__LOCK_REGION_LENGTH__+0x12c>
+						strip2[i].r = value[1];
+						strip2[i].g = value[2];
+						strip2[i].b = value[3];
+					}
+					ws2812_setleds_pin(strip2, NUM_PIXELS, TWO_PIN);
+ 53a:	48 e0       	ldi	r20, 0x08	; 8
+ 53c:	60 e1       	ldi	r22, 0x10	; 16
+ 53e:	70 e0       	ldi	r23, 0x00	; 0
+ 540:	8f ee       	ldi	r24, 0xEF	; 239
+ 542:	90 e0       	ldi	r25, 0x00	; 0
+ 544:	d1 de       	rcall	.-606    	; 0x2e8 <ws2812_setleds_pin>
+					break;
+ 546:	ab cf       	rjmp	.-170    	; 0x49e <__LOCK_REGION_LENGTH__+0x9e>
+
+00000548 <_exit>:
+ 548:	f8 94       	cli
+
+0000054a <__stop_program>:
+ 54a:	ff cf       	rjmp	.-2      	; 0x54a <__stop_program>

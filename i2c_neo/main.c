@@ -87,7 +87,7 @@ First load had the bright green led, then it was gone
 uint8_t TWI_slaveAddress = 0x04;
 
 // Color value array
-uint8_t value[] = {255, 255, 255};
+uint8_t value[] = {1,255, 255, 255};
 uint8_t pins[3] = {ONE_PIN, TWO_PIN, THREE_PIN};
 uint8_t val_index;
 uint8_t count = 0;
@@ -121,7 +121,7 @@ int main( void )
 	// init to Bears colors - alternating blue and white
 	_delay_ms(500); // wait until neo-pixels power up
 	for(uint8_t k = 0; k < NUM_PIXELS; k++) {
-		kf(k % 2) {
+		if(k % 2) {
 			strip1[k].r = 0;
 			strip1[k].g = 0;
 			strip1[k].b = 20;
@@ -147,9 +147,9 @@ int main( void )
 			strip3[k].b = 15;
 		}
 	}
-		ws2812_setleds_pin(strip1, NUM_PIXELS);
-		ws2812_setleds_pin(strip2, NUM_PIXELS);
-		ws2812_setleds_pin(strip3, NUM_PIXELS);
+	ws2812_setleds_pin(strip1, NUM_PIXELS, ONE_PIN);
+	ws2812_setleds_pin(strip2, NUM_PIXELS, TWO_PIN);
+	ws2812_setleds_pin(strip3, NUM_PIXELS, THREE_PIN);
 		_delay_ms(100);
 
 	_delay_ms(500);
@@ -179,7 +179,7 @@ int main( void )
 
 		// wait for whole message
 		if(!displayed && (val_index >= 4)) {
-			swtich(value[0]) {
+			switch(value[0]) {
 
 				case 1:
 					for(i = 0; i < NUM_PIXELS; i++) {
@@ -187,7 +187,7 @@ int main( void )
 						strip1[i].g = value[2];
 						strip1[i].b = value[3];
 					}
-					ws2812_setleds(strip1, NUM_PIXELS);
+					ws2812_setleds_pin(strip1, NUM_PIXELS, ONE_PIN);
 					break;
 
 				case 2:
@@ -196,7 +196,7 @@ int main( void )
 						strip2[i].g = value[2];
 						strip2[i].b = value[3];
 					}
-					ws2812_setleds(strip2, NUM_PIXELS);
+					ws2812_setleds_pin(strip2, NUM_PIXELS, TWO_PIN);
 					break;
 
 				case 3:
@@ -205,7 +205,7 @@ int main( void )
 						strip3[i].g = value[2];
 						strip3[i].b = value[3];
 					}
-					ws2812_setleds(strip3, NUM_PIXELS);
+					ws2812_setleds_pin(strip3, NUM_PIXELS, THREE_PIN);
 					break;
 				default:
 					break;
@@ -214,7 +214,7 @@ int main( void )
 			}
 		}
 
-#if 1
+#if 0
     // Do something else while waiting for the TWI transceiver to complete.
     // __no_operation(); // Put own code here.
 		// if 

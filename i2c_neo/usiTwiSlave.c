@@ -608,8 +608,8 @@ ISR( USI_OVERFLOW_VECTOR )
       // Not necessary, but prevents warnings
       rxHead = ( rxHead + 1 ) & TWI_RX_BUFFER_MASK;
       rxBuf[ rxHead ] = USIDR;
-			if(val_index < 3) {
-				// store 1st 3 values in color values array
+			if(val_index < 4) {
+				// store ring # & 1st 3 values in color values array
 				value[val_index] = rxBuf[rxHead];
 			}
 			val_index++;
