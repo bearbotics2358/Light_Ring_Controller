@@ -1,64 +1,72 @@
 // This file has been prepared for Doxygen automatic documentation generation.
 /*! \file ********************************************************************
-*
+ *
 
-  created 3/29/14 BD from main.c in AVR312, sort of
-	- bugs in AVR312
-Switched to cyz baseline for TWI routines
+ created 3/29/14 BD from main.c in AVR312, sort of
+ - bugs in AVR312
+ Switched to cyz baseline for TWI routines
 
-created ~2/10/15 from i2C_rgb
-- added code for neo-pixels
-- it works! except 1 led (last written?) is right color, but very bright
-test used green with a value of 15
-updated 2/11/15
-- tried with 15 instead of 16 - the one next to the blank is very bright
-- tried with 17, looks similar (same?) to original
-- took out pulsing BLUE pin in old rgb led code, cause that's the pin
-being used for neo-pixel
-- #if'd out old code for led
-- same issue
-- added code to set from I2C
-Acks ok
-Now no bright led (still at NUM_PIXELS=17)
-But doesn't change with I2C commands
-- put rgb led code (minus BLUE) back in, so have both
-rgb Green led flashing, as if rebooting
-On a positive note, no bright neopixel
-- took out sending neo pixels in loop
-- set NUM_PIXELS to 16
-- Now controllable, get acks, rgb led ok
-Neo-pixels have bright green led again
-- ASSUMPTION: setting neo-pixels interferes with TWI and causes reset
-- Set neo-pixels only after it has received all 3 bytes
-still appears to reset constantly
-- change "index" to "val_index" to make compiler happy
-- set val_index to 0 before calling usiTwiSlaveInit()
-- make the state variable overflowState from TWI global and add displayed
-When a byte is received, clear displayed
-Check if it has been displayed and between messages, then send
-Works! but have to send it twice
-And no bright pixel!
-- switch to using twi_stopped, which should tell when between messages
-never updated pixel ring
-- Switch back to val_index and !displayed
-Bright pixel at boot
-It Works!!!
+ created ~2/10/15 from i2C_rgb
+ - added code for neo-pixels
+ - it works! except 1 led (last written?) is right color, but very bright
+ test used green with a value of 15
+ updated 2/11/15
+ - tried with 15 instead of 16 - the one next to the blank is very bright
+ - tried with 17, looks similar (same?) to original
+ - took out pulsing BLUE pin in old rgb led code, cause that's the pin
+ being used for neo-pixel
+ - #if'd out old code for led
+ - same issue
+ - added code to set from I2C
+ Acks ok
+ Now no bright led (still at NUM_PIXELS=17)
+ But doesn't change with I2C commands
+ - put rgb led code (minus BLUE) back in, so have both
+ rgb Green led flashing, as if rebooting
+ On a positive note, no bright neopixel
+ - took out sending neo pixels in loop
+ - set NUM_PIXELS to 16
+ - Now controllable, get acks, rgb led ok
+ Neo-pixels have bright green led again
+ - ASSUMPTION: setting neo-pixels interferes with TWI and causes reset
+ - Set neo-pixels only after it has received all 3 bytes
+ still appears to reset constantly
+ - change "index" to "val_index" to make compiler happy
+ - set val_index to 0 before calling usiTwiSlaveInit()
+ - make the state variable overflowState from TWI global and add displayed
+ When a byte is received, clear displayed
+ Check if it has been displayed and between messages, then send
+ Works! but have to send it twice
+ And no bright pixel!
+ - switch to using twi_stopped, which should tell when between messages
+ never updated pixel ring
+ - Switch back to val_index and !displayed
+ Bright pixel at boot
+ It Works!!!
 
-NOTE: don't forget to clean up changes to twi, get rid of twi_stopped, ...
+ NOTE: don't forget to clean up changes to twi, get rid of twi_stopped, ...
 
-updated 2/12/15
-- move neo-pixel init to before enabling interrupts to see if it fixes bright led
-- change startup to be Bears colors - alternating blue and white:
-blue: 0 0 20
-white: 15 15 15
-- interesting, one led is still bright green, but otherwise ok
-- even with adding a 500ms delay after sending pixels, still get bright green led
+ updated 2/12/15
+ - move neo-pixel init to before enabling interrupts to see if it fixes bright led
+ - change startup to be Bears colors - alternating blue and white:
+ blue: 0 0 20
+ white: 15 15 15
+ - interesting, one led is still bright green, but otherwise ok
+ - even with adding a 500ms delay after sending pixels, still get bright green led
 
-updated 2/13/2015
-- add delay before setting neo-pixels to let them power up
-- add second call to setting and delay 
-First load had the bright green led, then it was gone
-- change delay between writes to 100 ms
+ updated 2/13/2015
+ - add delay before setting neo-pixels to let them power up
+ - add second call to setting and delay 
+ First load had the bright green led, then it was gone
+ - change delay between writes to 100 ms
+
+updated 2/3/2019
+- added multiple device support - command is now <device> <r> <g> <b>
+- added flushing rx buffer and moved location of setting display = 1 once the display has been updated,
+so that it will not be updated again until the next message is received
+- added volatile to variables shared with usiTwiSlave.c
+- testing succesful at 100 kHz with I2C running at 3.3v and neopixel supply at 5v
+
 
 ****************************************************************************/
 
@@ -87,9 +95,9 @@ First load had the bright green led, then it was gone
 uint8_t TWI_slaveAddress = 0x04;
 
 // Color value array
-uint8_t value[] = {1,255, 255, 255};
+volatile uint8_t value[] = {1,255, 255, 255};
 uint8_t pins[3] = {ONE_PIN, TWO_PIN, THREE_PIN};
-uint8_t val_index;
+volatile uint8_t val_index;
 uint8_t count = 0;
 
 struct cRGB strip1[NUM_PIXELS];
@@ -146,11 +154,27 @@ int main( void )
 			strip3[k].g = 15;
 			strip3[k].b = 15;
 		}
+
+		// debug - which strip is which?
+		if(k == 4) {
+			strip1[k].r = 100;
+			strip1[k].g = 0;
+			strip1[k].b = 0;
+
+			strip2[k].r = 0;
+			strip2[k].g = 100;
+			strip2[k].b = 0;
+
+			strip3[k].r = 0;
+			strip3[k].g = 0;
+			strip3[k].b = 100;
+		}
+
 	}
 	ws2812_setleds_pin(strip1, NUM_PIXELS, ONE_PIN);
 	ws2812_setleds_pin(strip2, NUM_PIXELS, TWO_PIN);
 	ws2812_setleds_pin(strip3, NUM_PIXELS, THREE_PIN);
-		_delay_ms(100);
+	_delay_ms(100);
 
 	_delay_ms(500);
 
@@ -160,96 +184,90 @@ int main( void )
 	sei();
 
   // This loop runs forever. If the TWI Transceiver is busy the execution will just continue doing other operations.
-  for(;;)
-  {
+  for(;;) {
 
-    if( usiTwiDataInReceiveBuffer() )
-    {
-        temp = usiTwiReceiveByte();
+		if( usiTwiDataInReceiveBuffer() )
+			{
+				temp = usiTwiReceiveByte();
 				displayed = 0;
 				/*
-				if(temp == 0x55) {
+					if(temp == 0x55) {
 					PORTB |= 0x08;
-				} else {
+					} else {
 					PORTB &= ~0x08;
-				}
+					}
 				*/
-        // usiTwiTransmitByte(temp);
-    }
+				// usiTwiTransmitByte(temp);
+			}
 
 		// wait for whole message
 		if(!displayed && (val_index >= 4)) {
 			switch(value[0]) {
 
-				case 1:
-					for(i = 0; i < NUM_PIXELS; i++) {
-						strip1[i].r = value[1];
-						strip1[i].g = value[2];
-						strip1[i].b = value[3];
-					}
-					ws2812_setleds_pin(strip1, NUM_PIXELS, ONE_PIN);
-					break;
+			case 1:
+				for(i = 0; i < NUM_PIXELS; i++) {
+					strip1[i].r = value[1];
+					strip1[i].g = value[2];
+					strip1[i].b = value[3];
+						
+					/* debug
+						 strip1[i].r = 50;
+						 strip1[i].g = 0;
+						 strip1[i].b = 0;
+					*/
+						
+				}
+				ws2812_setleds_pin(strip1, NUM_PIXELS, ONE_PIN);
+				break;
 
-				case 2:
-					for(i = 0; i < NUM_PIXELS; i++) {
-						strip2[i].r = value[1];
-						strip2[i].g = value[2];
-						strip2[i].b = value[3];
-					}
-					ws2812_setleds_pin(strip2, NUM_PIXELS, TWO_PIN);
-					break;
+			case 2:
+				for(i = 0; i < NUM_PIXELS; i++) {
+					strip2[i].r = value[1];
+					strip2[i].g = value[2];
+					strip2[i].b = value[3];
+						
+					/* debug
+						 strip2[i].r = 0;
+						 strip2[i].g = 50;
+						 strip2[i].b = 0;
+					*/
+						
+				}
+				ws2812_setleds_pin(strip2, NUM_PIXELS, TWO_PIN);
+				break;
 
-				case 3:
-					for(i = 0; i < NUM_PIXELS; i++) {
-						strip3[i].r = value[1];
-						strip3[i].g = value[2];
-						strip3[i].b = value[3];
-					}
-					ws2812_setleds_pin(strip3, NUM_PIXELS, THREE_PIN);
-					break;
-				default:
-					break;
+			case 3:
+				for(i = 0; i < NUM_PIXELS; i++) {
+					strip3[i].r = value[1];
+					strip3[i].g = value[2];
+					strip3[i].b = value[3];
+						
+					/* debug
+						 strip3[i].r = 0;
+						 strip3[i].g = 0;
+						 strip3[i].b = 50;
+					*/
+						
+				}
+				ws2812_setleds_pin(strip3, NUM_PIXELS, THREE_PIN);
+				break;
 
+			default:
+				break;
+
+			}
+			// don't display again until a new command is received
 			displayed = 1;
-			}
+
+			// ensure the rx buffer is empty
+			// this will cause us to wait for next start state
+			flushTwiBuffers();
 		}
 
-#if 0
-    // Do something else while waiting for the TWI transceiver to complete.
-    // __no_operation(); // Put own code here.
-		// if 
-		for(i = 0; i < 3; i++) {
-			// if(i != 1) continue;
-			if(i == 2) {
-				// skip blue, that's where neo-pixel is
-				continue;
-			}
-			if(count >= value[i]) {
-				// turn led off
-				PORTB |= pins[i];
-			} else {
-				// turn led on
-				PORTB &= ~pins[i];
-			}
-		}
-		count++;
-		if(count == 0) {
-			// don't turn led on if it's value is 0;
-			for(i = 0; i < 3; i++) {
-				// if(i != 1) continue;
-				if(i == 2) {
-					// skip blue, that's where neo-pixel is
-					continue;
-				}
-				if(value[i] != 0) {
-					// turn led on
-					PORTB &= ~pins[i];
-				}
-			}
-		}
-#endif
+		// Do something else while waiting for the TWI transceiver to complete.
+		// __no_operation(); // Put own code here.
 
-  }
+	}
 }
 
 /*! \mainpage

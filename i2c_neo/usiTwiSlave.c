@@ -36,7 +36,12 @@ Change Activity:
   2/11/15 
   - changed "index" to "val_index" to make compiler happy
   - moved overflowstate enum and variable to .h so can monitor from main
-               
+
+  updated 2/3/2019
+  - added extern and volatile to variables shared with main.c
+  - added multiple device support - command is now <device> <r> <g> <b>
+  - val_index is now 4 when a full message has been received
+
 
 ********************************************************************************/
 
@@ -53,8 +58,8 @@ Change Activity:
 #include "usiTwiSlave.h"
 
 // global variables form main.c
-uint8_t value[3];
-uint8_t val_index;
+extern volatile uint8_t value[4];
+extern volatile uint8_t val_index;
 
 
 /********************************************************************************
@@ -299,7 +304,7 @@ uint8_t slaveAddress;
 
 // flushes the TWI buffers
 
-static
+// static
 void
 flushTwiBuffers(
   void

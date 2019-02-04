@@ -70,6 +70,7 @@ volatile overflowState_t overflowState;
 volatile twi_stopped;
 
 
+void flushTwiBuffers(void);
 
 void    usiTwiSlaveInit( uint8_t address );
 void    usiTwiTransmitByte( uint8_t );

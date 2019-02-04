@@ -140,7 +140,7 @@ END GROUP
 .rela.plt
  *(.rela.plt)
 
-.text           0x0000000000000000      0x54c
+.text           0x0000000000000000      0x5c2
  *(.vectors)
  .vectors       0x0000000000000000       0x1e /usr/lib/gcc/avr/5.4.0/../../../avr/lib/avr25/crtattiny85.o
                 0x0000000000000000                __vectors
@@ -213,69 +213,70 @@ END GROUP
                 0x0000000000000054                __vector_8
                 0x0000000000000054                __vector_10
  .text          0x0000000000000056        0x0 main.o
- .text          0x0000000000000056      0x246 usiTwiSlave.o
-                0x0000000000000056                usiTwiSlaveInit
-                0x000000000000008c                usiTwiTransmitByte
-                0x00000000000000ac                usiTwiReceiveByte
-                0x00000000000000d2                usiTwiDataInReceiveBuffer
-                0x00000000000000e4                __vector_13
-                0x000000000000013a                __vector_14
- .text          0x000000000000029c      0x114 light_ws2812.o
-                0x000000000000029c                ws2812_setleds
-                0x00000000000002e8                ws2812_setleds_pin
-                0x000000000000033c                ws2812_sendarray
-                0x0000000000000374                ws2812_sendarray_mask
- .text          0x00000000000003b0        0x0 /usr/lib/gcc/avr/5.4.0/avr25/libgcc.a(_exit.o)
- .text          0x00000000000003b0        0x0 /usr/lib/gcc/avr/5.4.0/avr25/libgcc.a(_copy_data.o)
- .text          0x00000000000003b0        0x0 /usr/lib/gcc/avr/5.4.0/avr25/libgcc.a(_clear_bss.o)
-                0x00000000000003b0                . = ALIGN (0x2)
+ .text          0x0000000000000056      0x260 usiTwiSlave.o
+                0x0000000000000056                flushTwiBuffers
+                0x0000000000000068                usiTwiSlaveInit
+                0x000000000000009e                usiTwiTransmitByte
+                0x00000000000000be                usiTwiReceiveByte
+                0x00000000000000e4                usiTwiDataInReceiveBuffer
+                0x00000000000000f6                __vector_13
+                0x000000000000014c                __vector_14
+ .text          0x00000000000002b6      0x114 light_ws2812.o
+                0x00000000000002b6                ws2812_setleds
+                0x0000000000000302                ws2812_setleds_pin
+                0x0000000000000356                ws2812_sendarray
+                0x000000000000038e                ws2812_sendarray_mask
+ .text          0x00000000000003ca        0x0 /usr/lib/gcc/avr/5.4.0/avr25/libgcc.a(_exit.o)
+ .text          0x00000000000003ca        0x0 /usr/lib/gcc/avr/5.4.0/avr25/libgcc.a(_copy_data.o)
+ .text          0x00000000000003ca        0x0 /usr/lib/gcc/avr/5.4.0/avr25/libgcc.a(_clear_bss.o)
+                0x00000000000003ca                . = ALIGN (0x2)
  *(.text.*)
- .text.startup  0x00000000000003b0      0x198 main.o
-                0x00000000000003b0                main
+ .text.startup  0x00000000000003ca      0x1f4 main.o
+                0x00000000000003ca                main
  .text.libgcc.mul
-                0x0000000000000548        0x0 /usr/lib/gcc/avr/5.4.0/avr25/libgcc.a(_exit.o)
+                0x00000000000005be        0x0 /usr/lib/gcc/avr/5.4.0/avr25/libgcc.a(_exit.o)
  .text.libgcc.div
-                0x0000000000000548        0x0 /usr/lib/gcc/avr/5.4.0/avr25/libgcc.a(_exit.o)
- .text.libgcc   0x0000000000000548        0x0 /usr/lib/gcc/avr/5.4.0/avr25/libgcc.a(_exit.o)
+                0x00000000000005be        0x0 /usr/lib/gcc/avr/5.4.0/avr25/libgcc.a(_exit.o)
+ .text.libgcc   0x00000000000005be        0x0 /usr/lib/gcc/avr/5.4.0/avr25/libgcc.a(_exit.o)
  .text.libgcc.prologue
-                0x0000000000000548        0x0 /usr/lib/gcc/avr/5.4.0/avr25/libgcc.a(_exit.o)
+                0x00000000000005be        0x0 /usr/lib/gcc/avr/5.4.0/avr25/libgcc.a(_exit.o)
  .text.libgcc.builtins
-                0x0000000000000548        0x0 /usr/lib/gcc/avr/5.4.0/avr25/libgcc.a(_exit.o)
+                0x00000000000005be        0x0 /usr/lib/gcc/avr/5.4.0/avr25/libgcc.a(_exit.o)
  .text.libgcc.fmul
-                0x0000000000000548        0x0 /usr/lib/gcc/avr/5.4.0/avr25/libgcc.a(_exit.o)
+                0x00000000000005be        0x0 /usr/lib/gcc/avr/5.4.0/avr25/libgcc.a(_exit.o)
  .text.libgcc.fixed
-                0x0000000000000548        0x0 /usr/lib/gcc/avr/5.4.0/avr25/libgcc.a(_exit.o)
+                0x00000000000005be        0x0 /usr/lib/gcc/avr/5.4.0/avr25/libgcc.a(_exit.o)
  .text.libgcc.mul
-                0x0000000000000548        0x0 /usr/lib/gcc/avr/5.4.0/avr25/libgcc.a(_copy_data.o)
+                0x00000000000005be        0x0 /usr/lib/gcc/avr/5.4.0/avr25/libgcc.a(_copy_data.o)
  .text.libgcc.div
-                0x0000000000000548        0x0 /usr/lib/gcc/avr/5.4.0/avr25/libgcc.a(_copy_data.o)
- .text.libgcc   0x0000000000000548        0x0 /usr/lib/gcc/avr/5.4.0/avr25/libgcc.a(_copy_data.o)
+                0x00000000000005be        0x0 /usr/lib/gcc/avr/5.4.0/avr25/libgcc.a(_copy_data.o)
+ .text.libgcc   0x00000000000005be        0x0 /usr/lib/gcc/avr/5.4.0/avr25/libgcc.a(_copy_data.o)
  .text.libgcc.prologue
-                0x0000000000000548        0x0 /usr/lib/gcc/avr/5.4.0/avr25/libgcc.a(_copy_data.o)
+                0x00000000000005be        0x0 /usr/lib/gcc/avr/5.4.0/avr25/libgcc.a(_copy_data.o)
  .text.libgcc.builtins
-                0x0000000000000548        0x0 /usr/lib/gcc/avr/5.4.0/avr25/libgcc.a(_copy_data.o)
+                0x00000000000005be        0x0 /usr/lib/gcc/avr/5.4.0/avr25/libgcc.a(_copy_data.o)
  .text.libgcc.fmul
-                0x0000000000000548        0x0 /usr/lib/gcc/avr/5.4.0/avr25/libgcc.a(_copy_data.o)
+                0x00000000000005be        0x0 /usr/lib/gcc/avr/5.4.0/avr25/libgcc.a(_copy_data.o)
  .text.libgcc.fixed
-                0x0000000000000548        0x0 /usr/lib/gcc/avr/5.4.0/avr25/libgcc.a(_copy_data.o)
+                0x00000000000005be        0x0 /usr/lib/gcc/avr/5.4.0/avr25/libgcc.a(_copy_data.o)
  .text.libgcc.mul
-                0x0000000000000548        0x0 /usr/lib/gcc/avr/5.4.0/avr25/libgcc.a(_clear_bss.o)
+                0x00000000000005be        0x0 /usr/lib/gcc/avr/5.4.0/avr25/libgcc.a(_clear_bss.o)
  .text.libgcc.div
-                0x0000000000000548        0x0 /usr/lib/gcc/avr/5.4.0/avr25/libgcc.a(_clear_bss.o)
- .text.libgcc   0x0000000000000548        0x0 /usr/lib/gcc/avr/5.4.0/avr25/libgcc.a(_clear_bss.o)
+                0x00000000000005be        0x0 /usr/lib/gcc/avr/5.4.0/avr25/libgcc.a(_clear_bss.o)
+ .text.libgcc   0x00000000000005be        0x0 /usr/lib/gcc/avr/5.4.0/avr25/libgcc.a(_clear_bss.o)
  .text.libgcc.prologue
-                0x0000000000000548        0x0 /usr/lib/gcc/avr/5.4.0/avr25/libgcc.a(_clear_bss.o)
+                0x00000000000005be        0x0 /usr/lib/gcc/avr/5.4.0/avr25/libgcc.a(_clear_bss.o)
  .text.libgcc.builtins
-                0x0000000000000548        0x0 /usr/lib/gcc/avr/5.4.0/avr25/libgcc.a(_clear_bss.o)
+                0x00000000000005be        0x0 /usr/lib/gcc/avr/5.4.0/avr25/libgcc.a(_clear_bss.o)
  .text.libgcc.fmul
-                0x0000000000000548        0x0 /usr/lib/gcc/avr/5.4.0/avr25/libgcc.a(_clear_bss.o)
+                0x00000000000005be        0x0 /usr/lib/gcc/avr/5.4.0/avr25/libgcc.a(_clear_bss.o)
  .text.libgcc.fixed
-                0x0000000000000548        0x0 /usr/lib/gcc/avr/5.4.0/avr25/libgcc.a(_clear_bss.o)
-                0x0000000000000548                . = ALIGN (0x2)
+                0x00000000000005be        0x0 /usr/lib/gcc/avr/5.4.0/avr25/libgcc.a(_clear_bss.o)
+                0x00000000000005be                . = ALIGN (0x2)
  *(.fini9)
- .fini9         0x0000000000000548        0x0 /usr/lib/gcc/avr/5.4.0/avr25/libgcc.a(_exit.o)
-                0x0000000000000548                exit
-                0x0000000000000548                _exit
+ .fini9         0x00000000000005be        0x0 /usr/lib/gcc/avr/5.4.0/avr25/libgcc.a(_exit.o)
+                0x00000000000005be                exit
+                0x00000000000005be                _exit
  *(.fini9)
  *(.fini8)
  *(.fini8)
@@ -294,11 +295,11 @@ END GROUP
  *(.fini1)
  *(.fini1)
  *(.fini0)
- .fini0         0x0000000000000548        0x4 /usr/lib/gcc/avr/5.4.0/avr25/libgcc.a(_exit.o)
+ .fini0         0x00000000000005be        0x4 /usr/lib/gcc/avr/5.4.0/avr25/libgcc.a(_exit.o)
  *(.fini0)
-                0x000000000000054c                _etext = .
+                0x00000000000005c2                _etext = .
 
-.data           0x0000000000800060        0x8 load address 0x000000000000054c
+.data           0x0000000000800060        0x8 load address 0x00000000000005c2
                 0x0000000000800060                PROVIDE (__data_start, .)
  *(.data)
  .data          0x0000000000800060        0x0 /usr/lib/gcc/avr/5.4.0/../../../avr/lib/avr25/crtattiny85.o
@@ -342,8 +343,8 @@ END GROUP
  COMMON         0x0000000000800122        0x1 usiTwiSlave.o
                 0x0000000000800122                slaveAddress
                 0x0000000000800123                PROVIDE (__bss_end, .)
-                0x000000000000054c                __data_load_start = LOADADDR (.data)
-                0x0000000000000554                __data_load_end = (__data_load_start + SIZEOF (.data))
+                0x00000000000005c2                __data_load_start = LOADADDR (.data)
+                0x00000000000005ca                __data_load_end = (__data_load_start + SIZEOF (.data))
 
 .noinit         0x0000000000800123        0x0
                 [!provide]                        PROVIDE (__noinit_start, .)
@@ -371,17 +372,17 @@ END GROUP
 .user_signatures
  *(.user_signatures*)
 
-.stab           0x0000000000000000     0x19ec
+.stab           0x0000000000000000     0x1b24
  *(.stab)
- .stab          0x0000000000000000      0x8b8 main.o
- .stab          0x00000000000008b8      0x828 usiTwiSlave.o
-                                        0xa14 (size before relaxing)
- .stab          0x00000000000010e0      0x90c light_ws2812.o
+ .stab          0x0000000000000000      0x99c main.o
+ .stab          0x000000000000099c      0x87c usiTwiSlave.o
+                                        0xa68 (size before relaxing)
+ .stab          0x0000000000001218      0x90c light_ws2812.o
                                         0x96c (size before relaxing)
 
-.stabstr        0x0000000000000000     0x1bae
+.stabstr        0x0000000000000000     0x1bb6
  *(.stabstr)
- .stabstr       0x0000000000000000     0x1bae main.o
+ .stabstr       0x0000000000000000     0x1bb6 main.o
 
 .stab.excl
  *(.stab.excl)
