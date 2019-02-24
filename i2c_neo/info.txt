@@ -1,3 +1,77 @@
+20190224
+
+[hmmmm. avrdude no longer works from command line - there are multiple copies, but they fail with complaint about config file
+Re-installed avrdude ]
+
+
+PROGRAMMING
+
+Alternate form for commands using USBtiny:
+
+Checking fuses:
+$ avrdude -c usbtiny -p t85 -U lfuse:r:-:h -U hfuse:r:-:h -U efuse:r:-:h
+
+Programming fuses:
+$ avrdude -c usbtiny -p t85 -U lfuse:w:0xe2:m -U hfuse:w:0xde:m -U efuse:w:0xff:m
+
+Fuse Note:
+High fuse of DF = no BOD (Brown Out Detection), 0xDE = 1.8v BOD
+Fuse Calculator: http://www.engbedded.com/fusecalc/
+We used hfuse = 0xDE in 2019
+We used hfuse = 0xDF originally
+
+
+Programming flash:
+$ avrdude -c usbtiny -p t85 -U flash:w:i2c_neo.hex
+
+
+
+TESTING
+
+To test a light string controller using BusPirate:
+Strings are numbered 1, 2, and 3
+7 bit I2C address is 4
+
+use minicom to connect to Buspirate
+
+hit enter
+HiZ>
+
+For menu
+HiZ>m
+
+For I2C
+(1)>4
+
+Choose speed
+
+I2C>
+
+Power up:
+I2C>W
+
+To check for address:
+I2C>(1)
+
+Needs power cycle after address scan - I thought I found and fixed this in the new code 2019
+
+To send command:
+(Write "8" - 7 bit I2C address of 4 + 0 for R/W bit = 8)
+I2C>[8 1 10 0 0]
+
+
+When done:
+Power down:
+I2C>w
+
+Reset:
+I2C>#
+
+HiZ>
+
+
+HISTORY:
+
 20190202
 
 PROGRAMMING FUSES:
